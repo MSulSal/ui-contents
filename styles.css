@@ -1,13 +1,17 @@
 :root {
-  --dark: rgb(20, 20, 20);
-  --yellow: rgb(253, 216, 53);
-  --blue: rgb(98, 0, 234);
+  --purple: rgb(123, 31, 162);
+  --violet: rgb(103, 58, 183);
+  --pink: rgb(244, 143, 177);
+}
 
-  --c1: rgb(3, 7, 18);
-  --c2: rgb(163, 230, 53);
+@keyframes background-pan {
+  from {
+    background-position: 0% center;
+  }
 
-  --left-color: var(--c1);
-  --right-color: var(--c2);
+  to {
+    background-position: -200% center;
+  }
 }
 
 body {
@@ -38,7 +42,7 @@ body {
 }
 
 #right-side {
-  background-color: var(--blue);
+  background-color: var(--purple);
 }
 
 h2 {
@@ -47,6 +51,18 @@ h2 {
 
 .fancy {
   color: white;
+  animation: background-pan 3s linear infinite;
+  background: linear-gradient(
+    to right,
+    var(--purple),
+    var(--violet),
+    var(--pink),
+    var(--purple)
+  );
+  background-size: 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  white-space: nowrap;
 }
 
 ul {
