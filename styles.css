@@ -14,6 +14,7 @@ body {
   background-color: var(--dark);
   margin: 0px;
   display: flex;
+  font-family: "Rubik", sans-serif;
 }
 
 .side {
@@ -26,15 +27,13 @@ body {
 }
 
 .side .title {
-  color: white;
-  font-family: "Rubik", sans-serif;
   font-size: 8vw;
   margin: 0px 15vw;
   width: 70vw;
 }
 
 #left-side {
-  background-color: var(--yellow);
+  background-color: rgb(255, 255, 255);
   z-index: 2;
 }
 
@@ -44,4 +43,20 @@ body {
 
 h2 {
   text-align: center;
+}
+
+.fancy {
+  color: white;
+}
+
+ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  text-decoration: none;
+}
+
+li {
+  margin-bottom: 20px;
 }
