@@ -1,0 +1,47 @@
+:root {
+  --dark: rgb(20, 20, 20);
+  --yellow: rgb(253, 216, 53);
+  --blue: rgb(98, 0, 234);
+
+  --c1: rgb(3, 7, 18);
+  --c2: rgb(163, 230, 53);
+
+  --left-color: var(--c1);
+  --right-color: var(--c2);
+}
+
+body {
+  background-color: var(--dark);
+  margin: 0px;
+  display: flex;
+}
+
+.side {
+  height: 100vh;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  position: absolute;
+}
+
+.side .title {
+  color: white;
+  font-family: "Rubik", sans-serif;
+  font-size: 8vw;
+  margin: 0px 15vw;
+  width: 70vw;
+}
+
+#left-side {
+  background-color: var(--yellow);
+  z-index: 2;
+}
+
+#right-side {
+  background-color: var(--blue);
+}
+
+h2 {
+  text-align: center;
+}
