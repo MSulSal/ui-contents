@@ -67,7 +67,10 @@ class Particle {
     this.y = Math.random() * canvas.height;
     this.vx = (Math.random() - 0.5) * 0.5;
     this.vy = (Math.random() - 0.5) * 0.5;
-    this.radius = 1 + Math.random() * 2;
+    this.radius = 1 + Math.random() * 5;
+    this.color = `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(
+      Math.random() * 256
+    )}, ${Math.floor(Math.random() * 256)}, 0.7)`;
   }
 
   update() {
@@ -88,13 +91,13 @@ class Particle {
   draw() {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+    ctx.fillStyle = this.color;
     ctx.fill();
   }
 }
 
 const particles = [];
-const PARTICLE_COUNT = 100;
+const PARTICLE_COUNT = 250;
 for (let i = 0; i < PARTICLE_COUNT; i++) {
   particles.push(new Particle());
 }
