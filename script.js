@@ -1,149 +1,119 @@
-const wrapper = document.getElementById("tiles");
-const tileSize = 50;
+const menu = document.getElementById("menu-list");
+contents.forEach((item) => {
+  const li = document.createElement("li");
+  li.innerHTML = `<a href="${item.link}" target="_blank">${item.name}</a>`;
+  menu.appendChild(li);
+});
 
-const colors = [
-  "rgb(229, 57, 53)",
-  "rgb(244, 81, 30)",
-  "rgb(253, 216, 53)",
-  "rgb(76, 175, 80)",
-  "rgb(33, 150, 243)",
-  "rgb(156, 39, 176)",
-];
+const grid = document.getElementById("grid-screen");
+const tilesWrapper = document.createElement("div");
+tilesWrapper.id = "tiles";
+grid.appendChild(tilesWrapper);
 
-let columns = 0;
-let rows = 0;
-let toggled = false;
+const TILE_SIZE = 50;
+let columns = 0,
+  rows = 0;
 
-const handleOnClick = (index) => {
-  toggled = !toggled;
-  anime({
-    targets: ".tile",
-    opacity: toggled ? 0 : 1,
-    delay: anime.stagger(50, {
-      grid: [columns, rows],
-      from: index,
-    }),
-  });
-};
+function createGrid() {
+  tilesWrapper.innerHTML = "";
+  columns = Math.floor(window.innerWidth / TILE_SIZE);
+  rows = Math.floor(window.innerHeight / TILE_SIZE);
+  tilesWrapper.style.setProperty("--columns", columns);
+  tilesWrapper.style.setProperty("--rows", rows);
 
-const createTile = (index) => {
-  const tile = document.createElement("div");
-
-  tile.classList.add("tile");
-  tile.onclick = (e) => handleOnClick(index);
-  return tile;
-};
-
-const createTiles = (quantity) => {
-  Array.from(Array(quantity)).map((tile, index) => {
-    wrapper.appendChild(createTile(index));
-  });
-};
-
-const createGrid = () => {
-  wrapper.innerHTML = "";
-  columns = Math.floor(document.body.clientWidth / tileSize);
-  rows = Math.floor(document.body.clientHeight / tileSize);
-
-  wrapper.style.setProperty("--columns", columns);
-  wrapper.style.setProperty("--rows", rows);
-
-  createTiles(columns * rows);
-};
-createGrid();
-window.onresize = () => createGrid();
-
-const lists = document.getElementsByTagName("ul");
-for (const list of lists) {
-  for (let i = 0; i < contents.length; i++) {
-    list.appendChild(
-      document.createElement("li")
-    ).innerHTML = `<a href="${contents[i].link}" target="_blank">${contents[i].name}</a>`;
+  const total = columns * rows;
+  for (let i = 0; i < total; i++) {
+    const t = document.createElement("div");
+    t.classList.add("tile");
+    t.onclick = () => onTileClick(i);
+    tilesWrapper.appendChild(t);
   }
 }
 
-const left = document.getElementById("left-side");
+window.addEventListener("resize", createGrid);
+createGrid();
 
-// const handleOnMove = (e) => {
-//   const p = (e.clientX / window.innerWidth) * 100;
-//   left.style.width = `${p}%`;
-// };
+const canvas = document.getElementById("network-screen");
+const ctx = canvas.getContext("2d");
 
-// document.onmousemove = (e) => handleOnMove(e);
-// document.ontouchmove = (e) => handleOnMove(e.touches[0]);
+function resizeCanvas() {
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
 
-document.addEventListener("DOMContentLoaded", () => {
-  const canvas = document.getElementById("network-canvas");
-  const ctx = canvas.getContext("2d");
-
-  const resizeCanvas = () => {
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-  };
-  resizeCanvas();
-  window.addEventListener("resize", resizeCanvas);
-
-  class Particle {
-    constructor() {
-      this.reset();
-    }
-
-    reset() {
-      this.x = Math.random() * canvas.width;
-      this.y = Math.random() * canvas.height;
-      this.vx = (Math.random() - 0.5) * 0.5;
-      this.vy = (Math.random() - 0.5) * 0.5;
-      this.radius = 1 + Math.random() * 2;
-    }
-
-    update() {
-      this.x += this.vx;
-      this.y += this.vy;
-
-      if (this.x <= 0 || this.x >= canvas.width) this.vx *= -1;
-      if (this.y <= 0 || this.y >= canvas.height) this.vy *= -1;
-    }
-
-    draw() {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
-      ctx.fill();
-    }
+class Particle {
+  constructor() {
+    this.reset();
   }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.vx = (Math.random() - 0.5) * 0.5;
+    this.vy = (Math.random() - 0.5) * 0.5;
+    this.r = 1 + Math.random() * 2;
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+    if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(255,255,255,0.7)";
+    ctx.fill();
+  }
+}
 
-  const particles = [];
-  const PARTICLE_COUNT = 100;
+const particles = [];
+const PARTICLE_COUNT = 100;
+for (let i = 0; i < PARTICLE_COUNT; i++) {
+  particles.push(new Particle());
+}
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (let i = 0; i < PARTICLE_COUNT; i++) {
-    particles.push(new Particle());
-  }
-
-  const animate = () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    particles.forEach((p) => {
-      p.update();
-      p.draw();
-    });
-
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      for (let j = i + 1; j < PARTICLE_COUNT; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < 100) {
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = `rgba(255, 255, 255, ${1 - distance / 100})`;
-          ctx.lineWidth = 0.5;
-          ctx.stroke();
-        }
+    const p = particles[i];
+    p.update();
+    p.draw();
+    for (let j = i + 1; j < PARTICLE_COUNT; j++) {
+      const q = particles[j];
+      const dx = p.x - q.x,
+        dy = p.y - q.y;
+      const dist = Math.hypot(dx, dy);
+      if (dist < 100) {
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(q.x, q.y);
+        ctx.strokeStyle = `rgba(255,255,255,${1 - dist / 100})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
       }
     }
+  }
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
 
-    requestAnimationFrame(animate);
-  };
+let nodesVisible = false;
+function onTileClick(index) {
+  if (nodesVisible) return;
+  nodesVisible = true;
 
-  animate();
-});
+  anime({
+    targets: "#grid-screen",
+    opacity: [1, 0],
+    duration: 800,
+    easing: "easeInOutQuad",
+  });
+  anime({
+    targets: "#network-screen",
+    opacity: [0, 1],
+    duration: 800,
+    easing: "easeInOutQuad",
+  });
+}
