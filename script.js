@@ -123,20 +123,13 @@ function toggleScreens(index) {
       grid: [columns, rows],
       from: index,
     }),
-    duration: 500,
+    duration: 50,
     easing: "easeInOutQuad",
   });
 
   anime({
     targets: "#network-screen",
     opacity: nodesVisible ? 1 : 0,
-    duration: 800,
-    easing: "easeInOutQuad",
-    begin: function () {
-      document.getElementById("network-screen").style.background = nodesVisible
-        ? "linear-gradient(130deg, var(--g1) 66%, var(--g2) 83.5%, var(--g3) 100%)"
-        : "linear-gradient(130deg, var(--g1) 66%, var(--g2) 83.5%, var(--g3) 100%)";
-    },
   });
 
   anime({
