@@ -52,6 +52,33 @@ body {
   z-index: 2;
 }
 
+#tiles {
+  height: calc(100vh - 1px);
+  width: calc(100vw - 1px);
+  position: relative;
+  z-index: 2;
+
+  display: grid;
+  grid-template-columns: repeat(var(--columns), 1fr);
+  grid-template-rows: repeat(var(--rows), 1fr);
+}
+
+.tile {
+  position: relative;
+  cursor: pointer;
+}
+
+.tile:before {
+  background-color: rgb(15, 15, 15);
+  content: "";
+  position: absolute;
+  inset: 0.5px;
+}
+
+.tile:hover:before {
+  background-color: rgb(30, 30, 30);
+}
+
 #right-side {
   background: linear-gradient(
     130deg,
