@@ -97,7 +97,7 @@ class Particle {
 }
 
 const particles = [];
-const PARTICLE_COUNT = 250;
+const PARTICLE_COUNT = 150;
 for (let i = 0; i < PARTICLE_COUNT; i++) {
   particles.push(new Particle());
 }
