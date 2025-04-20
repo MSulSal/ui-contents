@@ -18,6 +18,7 @@ let columns = 0,
   rows = 0;
 let mouseX = 0,
   mouseY = 0;
+let hitCount = 0;
 
 function createGrid() {
   widthHeavy = window.innerWidth >= window.innerHeight;
@@ -57,6 +58,8 @@ document.addEventListener("pointermove", (e) => {
   mouseY = e.clientY;
 });
 
+let networkScreen = document.getElementById("network-screen");
+
 class Particle {
   constructor() {
     this.reset();
@@ -84,8 +87,32 @@ class Particle {
     }
     this.x += this.vx;
     this.y += this.vy;
-    if (this.x <= 0 || this.x >= canvas.width) this.vx *= -1;
-    if (this.y <= 0 || this.y >= canvas.height) this.vy *= -1;
+    if (this.x <= 0 || this.x >= canvas.width) {
+      hitCount++;
+      if (hitCount % 10 === 0) {
+        networkScreen.style.background = `linear-gradient(45deg, rgba(${Math.floor(
+          Math.random() * 256
+        )}, ${Math.floor(Math.random() * 256)}, ${Math.floor(
+          Math.random() * 256
+        )}, 0.7), rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(
+          Math.random() * 256
+        )}, ${Math.floor(Math.random() * 256)}, 0.7))`;
+      }
+      this.vx *= -1;
+    }
+    if (this.y <= 0 || this.y >= canvas.height) {
+      hitCount++;
+      if (hitCount % 10 === 0) {
+        networkScreen.style.background = `linear-gradient(45deg, rgba(${Math.floor(
+          Math.random() * 256
+        )}, ${Math.floor(Math.random() * 256)}, ${Math.floor(
+          Math.random() * 256
+        )}, 0.7), rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(
+          Math.random() * 256
+        )}, ${Math.floor(Math.random() * 256)}, 0.7))`;
+      }
+      this.vy *= -1;
+    }
   }
 
   draw() {
