@@ -10,11 +10,12 @@ const tilesWrapper = document.createElement("div");
 tilesWrapper.id = "tiles";
 grid.appendChild(tilesWrapper);
 
-const TILE_SIZE = 50;
+let TILE_SIZE = Math.floor(window.innerWidth / 50);
 let columns = 0,
   rows = 0;
 
 function createGrid() {
+  TILE_SIZE = Math.floor(window.innerWidth / 50);
   tilesWrapper.innerHTML = "";
   columns = Math.floor(window.innerWidth / TILE_SIZE);
   rows = Math.floor(window.innerHeight / TILE_SIZE);
