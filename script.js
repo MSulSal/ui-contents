@@ -16,6 +16,8 @@ let TILE_SIZE = widthHeavy
   : Math.floor(window.innerHeight / 50);
 let columns = 0,
   rows = 0;
+let mouseX = 0,
+  mouseY = 0;
 
 function createGrid() {
   widthHeavy = window.innerWidth >= window.innerHeight;
@@ -50,6 +52,11 @@ function resizeCanvas() {
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
+document.addEventListener("pointermove", (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+});
+
 class Particle {
   constructor() {
     this.reset();
@@ -64,9 +71,16 @@ class Particle {
   }
 
   update() {
+    const dx = mouseX - this.x;
+    const dy = mouseY - this.y;
+    const dist = Math.hypot(dx, dy);
+    if (dist < 200) {
+      const force = (200 - dist) * 0.0005;
+      this.vx += (dx / dist) * force;
+      this.vy += (dy / dist) * force;
+    }
     this.x += this.vx;
     this.y += this.vy;
-
     if (this.x <= 0 || this.x >= canvas.width) this.vx *= -1;
     if (this.y <= 0 || this.y >= canvas.height) this.vy *= -1;
   }
@@ -87,12 +101,10 @@ for (let i = 0; i < PARTICLE_COUNT; i++) {
 
 const animate = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
   particles.forEach((p) => {
     p.update();
     p.draw();
   });
-
   for (let i = 0; i < PARTICLE_COUNT; i++) {
     for (let j = i + 1; j < PARTICLE_COUNT; j++) {
       const dx = particles[i].x - particles[j].x;
@@ -108,7 +120,6 @@ const animate = () => {
       }
     }
   }
-
   requestAnimationFrame(animate);
 };
 
