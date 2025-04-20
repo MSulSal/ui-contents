@@ -97,7 +97,7 @@ class Particle {
 }
 
 const particles = [];
-const PARTICLE_COUNT = window.innerWidth * window.innerHeight * 0.0001;
+const PARTICLE_COUNT = window.innerWidth * window.innerHeight * 0.000075;
 for (let i = 0; i < PARTICLE_COUNT; i++) {
   particles.push(new Particle());
 }
