@@ -15,4 +15,8 @@ const contents = [
     name: "Staggered Grid Effect",
     link: "https://msulsal.github.io/staggered-grid-effect/",
   },
+  {
+    name: "Staggered Grid Effect 2",
+    link: "https://msulsal.github.io/staggered-grid-two/",
+  },
 ];
