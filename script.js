@@ -25,7 +25,7 @@ function createGrid() {
   for (let i = 0; i < total; i++) {
     const t = document.createElement("div");
     t.classList.add("tile");
-    t.onclick = () => onTileClick(i);
+    t.onclick = () => toggleScreens(i);
     tilesWrapper.appendChild(t);
   }
 }
@@ -47,23 +47,27 @@ class Particle {
   constructor() {
     this.reset();
   }
+
   reset() {
     this.x = Math.random() * canvas.width;
     this.y = Math.random() * canvas.height;
     this.vx = (Math.random() - 0.5) * 0.5;
     this.vy = (Math.random() - 0.5) * 0.5;
-    this.r = 1 + Math.random() * 2;
+    this.radius = 1 + Math.random() * 2;
   }
+
   update() {
     this.x += this.vx;
     this.y += this.vy;
-    if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-    if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+    if (this.x <= 0 || this.x >= canvas.width) this.vx *= -1;
+    if (this.y <= 0 || this.y >= canvas.height) this.vy *= -1;
   }
+
   draw() {
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(255,255,255,0.7)";
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
     ctx.fill();
   }
 }
@@ -74,46 +78,89 @@ for (let i = 0; i < PARTICLE_COUNT; i++) {
   particles.push(new Particle());
 }
 
-function animateParticles() {
+const animate = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  for (let i = 0; i < PARTICLE_COUNT; i++) {
-    const p = particles[i];
+
+  particles.forEach((p) => {
     p.update();
     p.draw();
+  });
+
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
     for (let j = i + 1; j < PARTICLE_COUNT; j++) {
-      const q = particles[j];
-      const dx = p.x - q.x,
-        dy = p.y - q.y;
-      const dist = Math.hypot(dx, dy);
-      if (dist < 100) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance < 100) {
         ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-        ctx.lineTo(q.x, q.y);
-        ctx.strokeStyle = `rgba(255,255,255,${1 - dist / 100})`;
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(255, 255, 255, ${1 - distance / 100})`;
         ctx.lineWidth = 0.5;
         ctx.stroke();
       }
     }
   }
-  requestAnimationFrame(animateParticles);
-}
-animateParticles();
+
+  requestAnimationFrame(animate);
+};
+
+animate();
 
 let nodesVisible = false;
-function onTileClick(index) {
-  if (nodesVisible) return;
-  nodesVisible = true;
+
+function toggleScreens(index) {
+  nodesVisible = !nodesVisible;
+
+  const tiles = document.querySelectorAll(".tile");
+  const total = tiles.length;
+  const centerIndex = Math.floor(total / 2);
+
+  anime({
+    targets: tiles,
+    opacity: nodesVisible ? 0 : 1,
+    delay: anime.stagger(50, {
+      grid: [columns, rows],
+      from: index,
+    }),
+    duration: 500,
+    easing: "easeInOutQuad",
+  });
+
+  anime({
+    targets: "#network-screen",
+    opacity: nodesVisible ? 1 : 0,
+    duration: 800,
+    easing: "easeInOutQuad",
+    begin: function () {
+      document.getElementById("network-screen").style.background = nodesVisible
+        ? "linear-gradient(130deg, var(--g1) 66%, var(--g2) 83.5%, var(--g3) 100%)"
+        : "linear-gradient(130deg, var(--g1) 66%, var(--g2) 83.5%, var(--g3) 100%)";
+    },
+  });
 
   anime({
     targets: "#grid-screen",
-    opacity: [1, 0],
+    opacity: nodesVisible ? 0 : 1,
     duration: 800,
     easing: "easeInOutQuad",
   });
-  anime({
-    targets: "#network-screen",
-    opacity: [0, 1],
-    duration: 800,
-    easing: "easeInOutQuad",
-  });
+
+  if (!nodesVisible) {
+    anime({
+      targets: ".tile",
+      opacity: 1,
+      scale: [0, 1],
+      delay: anime.stagger(50, {
+        grid: [columns, rows],
+        from: centerIndex,
+      }),
+      duration: 600,
+      easing: "easeInOutQuad",
+    });
+  }
 }
+
+document
+  .getElementById("network-screen")
+  .addEventListener("click", () => toggleScreens());
