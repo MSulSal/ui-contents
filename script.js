@@ -58,7 +58,52 @@ document.addEventListener("pointermove", (e) => {
   mouseY = e.clientY;
 });
 
-let networkScreen = document.getElementById("network-screen");
+const networkScreen = document.getElementById("network-screen");
+
+let currentColors = [
+  [0, 0, 0, 0.7],
+  [0, 0, 0, 0.7],
+];
+let targetColors = null;
+let transitionStart = 0;
+const transitionDuration = 500;
+
+function startColorTransition() {
+  targetColors = [
+    [
+      Math.floor(Math.random() * 256),
+      Math.floor(Math.random() * 256),
+      Math.floor(Math.random() * 256),
+      0.7,
+    ],
+    [
+      Math.floor(Math.random() * 256),
+      Math.floor(Math.random() * 256),
+      Math.floor(Math.random() * 256),
+      0.7,
+    ],
+  ];
+  transitionStart = performance.now();
+}
+
+function updateBackground(now) {
+  if (!targetColors) return;
+  let t = (now - transitionStart) / transitionDuration;
+  if (t >= 1) {
+    t = 1;
+  }
+  const interp = currentColors.map((start, i) => {
+    const end = targetColors[i];
+    return start.map((c, idx) => c + (end[idx] - c) * t);
+  });
+  networkScreen.style.background = `linear-gradient(45deg, rgba(${interp[0].join(
+    ","
+  )}), rgba(${interp[1].join(",")}))`;
+  if (t === 1) {
+    currentColors = targetColors;
+    targetColors = null;
+  }
+}
 
 class Particle {
   constructor() {
@@ -89,28 +134,12 @@ class Particle {
     this.y += this.vy;
     if (this.x <= 0 || this.x >= canvas.width) {
       hitCount++;
-      if (hitCount % 10 === 0) {
-        networkScreen.style.background = `linear-gradient(45deg, rgba(${Math.floor(
-          Math.random() * 256
-        )}, ${Math.floor(Math.random() * 256)}, ${Math.floor(
-          Math.random() * 256
-        )}, 0.7), rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(
-          Math.random() * 256
-        )}, ${Math.floor(Math.random() * 256)}, 0.7))`;
-      }
+      if (hitCount % 10 === 0) startColorTransition();
       this.vx *= -1;
     }
     if (this.y <= 0 || this.y >= canvas.height) {
       hitCount++;
-      if (hitCount % 10 === 0) {
-        networkScreen.style.background = `linear-gradient(45deg, rgba(${Math.floor(
-          Math.random() * 256
-        )}, ${Math.floor(Math.random() * 256)}, ${Math.floor(
-          Math.random() * 256
-        )}, 0.7), rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(
-          Math.random() * 256
-        )}, ${Math.floor(Math.random() * 256)}, 0.7))`;
-      }
+      if (hitCount % 10 === 0) startColorTransition();
       this.vy *= -1;
     }
   }
@@ -129,7 +158,8 @@ for (let i = 0; i < PARTICLE_COUNT; i++) {
   particles.push(new Particle());
 }
 
-const animate = () => {
+const animate = (now) => {
+  updateBackground(now);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   particles.forEach((p) => {
     p.update();
