@@ -6,6 +6,8 @@
   --g1: #000421;
   --g2: #110527;
   --g3: #20062c;
+  --g4: rgb(98, 0, 234);
+  --g5: rgb(236, 64, 122);
 }
 
 @keyframes background-pan {
@@ -41,7 +43,12 @@ body {
 }
 
 #left-side {
-  background-color: rgb(255, 255, 255);
+  animation: background-pan 10s linear infinite;
+  background: linear-gradient(to right, var(--g4), var(--g5), var(--g4));
+  background-size: 200%;
+  height: 100vh;
+  overflow: hidden;
+  margin: 0px;
   z-index: 2;
 }
 
