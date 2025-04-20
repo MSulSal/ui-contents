@@ -18,6 +18,7 @@ let columns = 0,
   rows = 0;
 
 function createGrid() {
+  widthHeavy = window.innerWidth >= window.innerHeight;
   TILE_SIZE = widthHeavy
     ? Math.floor(window.innerWidth / 50)
     : Math.floor(window.innerHeight / 50);
