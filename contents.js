@@ -19,4 +19,12 @@ const contents = [
     name: "Staggered Grid Effect 2",
     link: "https://msulsal.github.io/staggered-grid-two/",
   },
+  {
+    name: "Arcade Style Menu",
+    link: "https://msulsal.github.io/arcade-style-menu/",
+  },
+  {
+    name: "Smart Mouse Trailer",
+    link: "https://msulsal.github.io/mouse-trailer-intel/",
+  },
 ];
