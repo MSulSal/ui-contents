@@ -27,4 +27,8 @@ const contents = [
     name: "Smart Mouse Trailer",
     link: "https://msulsal.github.io/mouse-trailer-intel/",
   },
+  {
+    name: "Zen",
+    link: "https://msulsal.github.io/zen/",
+  },
 ];
